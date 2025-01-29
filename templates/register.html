@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register</title>
+    <link href="css/style.css" rel="stylesheet">
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/register.js"></script>
+  </head>
+  <body>
+    {{ block "header" .}}
+    {{ end }}
+    <main>
+      <h1>Register</h1>
+      <form method="post" onsubmit="callRegisterProcess(event)">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="checkbox" id="spass" /> Show password
+        <input type="password"  id=cpassword placeholder="Confirm Password" required>
+        <input type="checkbox" id="scpass" /> Show password
+        <button type="submit">Register</button>
+      </form>
+    </main>
+  </body>
+</html>

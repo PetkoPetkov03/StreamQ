@@ -1,0 +1,6 @@
+/db.sqlite3
+/package-lock.json
+/streamq-backend
+/node_modules/
+orm/
+/go.sum

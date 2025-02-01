@@ -2,7 +2,7 @@ version: "2"
 sql:
   - engine: "sqlite"
     queries: "streamqsql/queries/*.sql"
-    schema: "streamqsql/schemas/users.sql"
+    schema: "streamqsql/schemas/*.sql"
     gen:
       go:
         package: "steamqsql"

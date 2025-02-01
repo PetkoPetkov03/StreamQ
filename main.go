@@ -20,20 +20,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	controller := controllers.FetchController()
 
-	funcs := utils.SetUpRoutes()
-
-	controllers.MapController(funcs)
-
-	for k, v := range funcs {
-		if k.Method == "GET" {
-			r.GET(k.Route, v)
-		}
-
-		if k.Method == "POST" {
-			r.POST(k.Route, v)
-		}
-	}
+	controller.Init(r)
 
 	r.Run()
 }

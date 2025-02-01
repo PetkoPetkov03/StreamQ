@@ -6,7 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func IndexView(ctx *gin.Context) {
-  ctx.HTML(http.StatusOK, "index.html", gin.H{
-  })
+func HomeController(controller *Controller) {
+
+	controller.Get("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", gin.H{})
+	})
+}
+
+func init() {
+	RegisterController(HomeController)
 }

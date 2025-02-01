@@ -1,0 +1,5 @@
+-- name: InitializeSession :one
+INSERT INTO USERSESSIONS (
+    TOKEN, CREATED_FROM, EXPIRE_DATE, USER_ID
+) VALUES (?,?,?,?)
+RETURNING *;

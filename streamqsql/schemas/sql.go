@@ -58,8 +58,6 @@ func SetUpDBConnection() (*steamqsql.Queries, error) {
 		return nil, err
 	}
 
-	defer db.Close()
-
 	loadDDLEmbed()
 
 	for _, dd := range ddl {

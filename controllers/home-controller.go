@@ -7,7 +7,6 @@ import (
 )
 
 func HomeController(controller *Controller) {
-
 	controller.Get("/", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})
 	})

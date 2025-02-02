@@ -20,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	controller := controllers.FetchController()
 
 	controller.Init(r)

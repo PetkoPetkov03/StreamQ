@@ -4,10 +4,12 @@ import (
 	"errors"
 	"net/mail"
 	"sync"
+	"time"
 
 	steamqsql "github.com/PetkoPetkov/streamq-backend/orm"
 	"github.com/PetkoPetkov/streamq-backend/streamqsql/schemas"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -38,6 +40,18 @@ type AuthServiceInterface interface {
 }
 
 type AuthService struct {
+}
+
+type SessionInterface interface {
+	Session() string
+}
+
+type Session struct {
+	value string
+}
+
+func (session Session) Session() string {
+	return session.value
 }
 
 func (auth AuthService) Register(ctx *gin.Context, userPrototype UserAuthReq) error {
@@ -101,6 +115,50 @@ func (auth AuthService) Register(ctx *gin.Context, userPrototype UserAuthReq) er
 	return nil
 }
 
-func (auth AuthService) Login(ctx *gin.Context, userPrototype UserAuth) (session string, err error) {
-	return "", nil
+func (auth AuthService) checkPwd(password string, hash string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
+}
+
+func (auth AuthService) Login(ctx *gin.Context, userPrototype UserAuth) (session *Session, err error) {
+	count, err := schemas.GetQueryCaller().CheckIfEmailExists(ctx, userPrototype.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if count != 1 {
+		return nil, errors.New("user dosen't exist")
+	}
+
+	user, err := schemas.GetQueryCaller().FetchUserForSession(ctx, userPrototype.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	match := auth.checkPwd(userPrototype.Password, user.Hash)
+
+	if !match {
+		return nil, errors.New("password is wrong")
+	}
+
+	sessionParams := steamqsql.InitializeSessionParams{
+		Token:       uuid.NewString(),
+		UserID:      user.ID,
+		ProfileID:   user.Profileid,
+		CreatedFrom: "",
+		CreatedAt:   time.Now().Local(),
+		ExpireDate:  time.Now().Local().Add(24 * time.Hour * time.Duration(3)),
+	}
+
+	sessionInstance, err := schemas.GetQueryCaller().InitializeSession(ctx, sessionParams)
+
+	if err != nil {
+		return nil, err
+	}
+
+	session = &Session{
+		value: sessionInstance.Token,
+	}
+
+	return session, nil
 }

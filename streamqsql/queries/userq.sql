@@ -15,3 +15,10 @@ RETURNING id;
 
 -- name: CreateProfile :one
 INSERT INTO PROFILES (userRole) VALUES(?) RETURNING id;
+
+-- name: FetchUserForSession :one
+SELECT u.id, u.email, u.hash, u.username, u.profileid, p.userRole 
+FROM USERS u
+INNER JOIN PROFILES p ON p.id = u.profileid 
+WHERE u.email = ? 
+LIMIT 1;
